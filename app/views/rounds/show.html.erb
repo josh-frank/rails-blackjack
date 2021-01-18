@@ -1,0 +1,53 @@
+<%= stylesheet_link_tag "blackjack_table" %>
+<table>
+    
+    <tr><td colspan="2">
+        <%= image_tag @this_round.status.nil? || @this_round.status == "bust" || @this_round.status == "blackjack" ? "/images/cards/00.svg" : "/images/cards/#{ @this_round.dealer_array[ 0 ].to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
+        <% @this_round.dealer_array[ 1..-1 ].each do | dealer_card | %>
+            <%= image_tag "/images/cards/#{ dealer_card.to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
+        <% end %>
+    </td></tr>
+
+    <tr><td colspan="2">
+        <b style="font-size:36px;color:yellow">BLACKJACK PAYS 3 TO 2</b><br />
+        <b style="font-size:27px"><em>Dealer must hit soft 17</em></b><br />
+        <b style="font-size:36px;color:yellow">INSURANCE PAYS 2 TO 1</b>
+    </td></tr>
+
+    <tr>
+        
+        <td style="border:3px solid white; border-radius:20px">
+            <% @this_round.player_array.each do | player_card | %>
+                <%= image_tag "/images/cards/#{ player_card.to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
+            <% end %>
+        </td>
+
+        <td>
+            <h1>
+                <%= @this_round.player_score[ 0 ] == @this_round.player_score[ 1 ] || @this_round.player_score[ 0 ] > 21 ? @this_round.player_score[ 1 ] : "#{ @this_round.player_score[ 0 ] }/#{ @this_round.player_score[ 1 ] }" %>
+            </h1>
+            
+            <% case @this_round.status %>
+            <% when "bust"%>
+                <h1 style="color:red">PLAYER BUSTS</h1>
+            <% when "loss"%>
+                <h1 style="color:red">DEALER WINS</h1>
+            <% when "push"%>
+                <h1>PUSH</h1>
+            <% when "win" %>
+                <h1 style="color:yellow">PLAYER WINS</h1>
+            <% when "blackjack" %>
+                <h1 style="color:yellow">BLACKJACK</h1>
+            <% else %>
+                <%= button_to "Hit", hit_path( @this_round ), method: "patch" %>
+                <br /><br /><%= button_to "Stand", stand_path( @this_round ), method: "patch" %>
+                <% end %>
+            <% if !@this_round.status.nil? %>
+                <br /><br /><%= button_to "Deal a new round", new_round_path( @this_round.player ), method: "post" %>
+            <% end %>
+        </td>
+
+    </tr>
+
+</table>
+

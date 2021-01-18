@@ -1,0 +1,51 @@
+<style>
+    table, th, td { border: 3px solid white; }
+    table { border-collapse: collapse; margin-left: auto; margin-right: auto; }
+    td { text-align: center; vertical-align: middle; padding: 20px; }
+    a { color: white; }
+</style>
+
+<table>
+
+    <tr>
+        <th><h2>No.</h2></th>
+        <th><h2>Player hand</h2></th>
+        <th><h2>Dealer hand</h2></th>
+        <th><h2>Result</h2></th>
+    </tr>
+
+    <% @all_rounds.each do | round | %>
+        <tr>
+            <td><h2><%= link_to round.id, round_path( round ) %></h2></td>
+            <td>
+                <% round.player_array.each do | player_card | %>
+                    <%= image_tag "/images/cards/#{ player_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                <% end %>
+            </td>
+            <td>
+                <% if [ nil, "bust", "blackjack" ].include?( round.status ) %>
+                    <%= image_tag "/images/cards/00.svg", height: '50' %>&nbsp;
+                <% else %>
+                    <%= image_tag "/images/cards/#{ round.dealer_array[ 0 ].to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                <% end %>
+                <% round.dealer_array[ 1..-1 ].each do | dealer_card | %>
+                    <%= image_tag "/images/cards/#{ dealer_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                <% end %>
+            </td>
+            <td>
+                <% if round.status == "win" || round.status == "blackjack" %>
+                    <h2 style="color:yellow">
+                <% elsif round.status == "bust" || round.status == "loss" %>
+                    <h2 style="color:red">
+                <% elsif round.status.nil? %>
+                    <h2 style="color:greenyellow">
+                <% else %>
+                    <h2>
+                <% end %>
+                <%= round.status.nil? ? "Unfinished" : round.status.capitalize %>
+                </h2>
+            </td>
+        </tr>
+    <% end %>
+
+</table>

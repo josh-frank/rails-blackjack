@@ -13,6 +13,10 @@ class Round < ApplicationRecord
 
     belongs_to :player
 
+    validates :bet, numericality: { greater_than: 0, message: "must be greater than 0" }
+    validates :bet, numericality: { less_than_or_equal_to: 100, message: "limit: $100" }
+    validate :bet_less_than_bankroll
+
     after_create :deal
 
     def dealer_array
@@ -56,6 +60,12 @@ class Round < ApplicationRecord
     end
     
     private
+
+    def bet_less_than_bankroll
+        if self.bet > self.player.bankroll
+            errors.add( :bet, "must be covered by bankroll" )
+        end
+    end
     
     def deal
         self.update( dealer_cards: self.deck.pop( 2 ) )

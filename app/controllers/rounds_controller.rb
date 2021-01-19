@@ -5,8 +5,15 @@ class RoundsController < ApplicationController
   end
 
   def new
-    new_round = Round.create( player_id: params[ :player_id ], dealer_cards: [], player_cards: [] )
-    redirect_to round_path( new_round )
+    new_round = Round.create( player_id: params[ :player_id ], bet: params[ :next_bet ], dealer_cards: [], player_cards: [] )
+    if new_round.valid?
+      new_round.player.update( bankroll: new_round.player.bankroll - new_round.bet )
+      new_round.player.update( bankroll: new_round.player.bankroll + new_round.bet * 3 ) if new_round.player_blackjack?
+      redirect_to round_path( new_round )
+    else
+      flash[ :messages ] = new_round.errors.full_messages
+      redirect_to params[ :round_id ] ? round_path( Round.find( params[ :round_id ] ) ) : player_path( Player.find( params[ :player_id ] ) )
+    end
   end
   
   def show
@@ -17,11 +24,7 @@ class RoundsController < ApplicationController
     this_round = Round.find( params[ :id ] )
     this_round.update( player_cards: this_round.player_array + this_round.deck.pop( 1 ) )
     this_round.update( status: "bust" ) if this_round.player_bust?
-    if this_round.player_score.include?( 21 )
-      redirect_to stand_path( this_round )
-    else
-      redirect_to round_path( this_round )
-    end
+    redirect_to round_path( this_round )
   end
   
   def stand
@@ -31,8 +34,10 @@ class RoundsController < ApplicationController
     dealer_score = this_round.dealer_score[ 0 ] > 21 ? this_round.dealer_score[ 1 ] : this_round.dealer_score.max
     if player_score > dealer_score || this_round.dealer_bust?
       this_round.update( status: "win" )
+      this_round.player.update( bankroll: this_round.player.bankroll + this_round.bet * 2 )
     elsif player_score == dealer_score
       this_round.update( status: "push" )
+      this_round.player.update( bankroll: this_round.player.bankroll + this_round.bet )
     else
       this_round.update( status: "loss" )
     end

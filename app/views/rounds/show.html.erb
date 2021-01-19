@@ -1,20 +1,27 @@
 <%= stylesheet_link_tag "blackjack_table" %>
 <table>
     
-    <tr><td colspan="2">
+    <tr><td colspan="3">
         <%= image_tag @this_round.status.nil? || @this_round.status == "bust" || @this_round.status == "blackjack" ? "/images/cards/00.svg" : "/images/cards/#{ @this_round.dealer_array[ 0 ].to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
         <% @this_round.dealer_array[ 1..-1 ].each do | dealer_card | %>
             <%= image_tag "/images/cards/#{ dealer_card.to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
         <% end %>
     </td></tr>
 
-    <tr><td colspan="2">
+    <tr><td colspan="3">
         <b style="font-size:36px;color:yellow">BLACKJACK PAYS 3 TO 2</b><br />
         <b style="font-size:27px"><em>Dealer must hit soft 17</em></b><br />
         <b style="font-size:36px;color:yellow">INSURANCE PAYS 2 TO 1</b>
     </td></tr>
 
     <tr>
+
+        <td>
+            <h1>Bet:
+            <br />$<%= "%.2f" % @this_round.bet %></h1>
+            <h1>Bankroll:
+            <br />$<%= "%.2f" % @this_round.player.bankroll %></h1>
+        </td>
         
         <td style="border:3px solid white; border-radius:20px">
             <% @this_round.player_array.each do | player_card | %>
@@ -39,11 +46,21 @@
             <% when "blackjack" %>
                 <h1 style="color:yellow">BLACKJACK</h1>
             <% else %>
-                <%= button_to "Hit", hit_path( @this_round ), method: "patch" %>
+                <%= button_to "Hit", hit_path( @this_round ), method: "patch" if !@this_round.player_score.include?( 21 )%>
                 <br /><br /><%= button_to "Stand", stand_path( @this_round ), method: "patch" %>
                 <% end %>
             <% if !@this_round.status.nil? %>
-                <br /><br /><%= button_to "Deal a new round", new_round_path( @this_round.player ), method: "post" %>
+                <% if flash[ :messages ] %>
+                    <% flash[ :messages ].each do | error_message | %>
+                        <h3><%= error_message %></h3>
+                    <% end %>
+                <% end %>
+                <%= form_with url: new_round_path( @this_round.player, params: { round_id: @this_round.id } ), method: "post" do | f | %>
+                    <%= f.label :next_bet, "Place your bet:" %><br />
+                    <%= f.number_field :next_bet, value: @this_round.bet, step: 0.1 %><br />
+                    <%= f.submit "Deal a new round" %>
+                <% end %>
+                <!-- <br /><br /><%= button_to "Deal a new round", new_round_path( @this_round.player ), method: "post" %> -->
             <% end %>
         </td>
 

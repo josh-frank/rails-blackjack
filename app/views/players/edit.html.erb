@@ -1,0 +1,12 @@
+<%= stylesheet_link_tag "blackjack_table" %>
+<h1>Change name: <%= @this_player.name %></h1>
+<%= form_for @this_player do | f | %>
+    <% if flash[ :messages ] %>
+        <% flash[ :messages ].each do | error_message | %>
+            <h3><%= error_message %></h3>
+        <% end %>
+    <% end %>
+    <%= f.label :name, "New player name: " %>
+    <%= f.text_field :name %>
+    <%= f.submit %>
+<% end %>

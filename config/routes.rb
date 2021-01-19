@@ -1,6 +1,18 @@
 Rails.application.routes.draw do
 
-  get 'rounds/', to: 'rounds#index', as: 'rounds'
+  ########## PLAYERS ##########
+  
+  get 'players/', to: 'players#index', as: 'players'
+  
+  get 'players/new', to: 'players#new', as: 'new_player'
+  post 'players/', to: 'players#create'
+  
+  get 'players/:id/edit', to: 'players#edit', as: 'edit_player'
+  patch 'players/:id', to: 'players#update'
+  
+  get 'players/:id', to: 'players#show', as: 'player'
+
+  ########## ROUNDS ##########
 
   get 'rounds/:id', to: 'rounds#show', as: 'round'
   

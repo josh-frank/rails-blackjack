@@ -17,3 +17,15 @@ td {
     vertical-align: middle;
     padding: 20px;
 }
+
+a:link {
+    color: white;
+  }
+  
+a:active {
+    color: grey;
+  }
+
+a:visited {
+    color: lightgrey;
+  }

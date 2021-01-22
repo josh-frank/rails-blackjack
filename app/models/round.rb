@@ -62,7 +62,7 @@ class Round < ApplicationRecord
     private
 
     def bet_less_than_bankroll
-        if self.bet > self.player.bankroll
+        if self.bet > self.player.current_bankroll
             errors.add( :bet, "must be covered by bankroll" )
         end
     end

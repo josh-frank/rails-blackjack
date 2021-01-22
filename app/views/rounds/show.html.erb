@@ -9,9 +9,9 @@
     </td></tr>
 
     <tr><td colspan="3">
-        <b style="font-size:36px;color:yellow">BLACKJACK PAYS 3 TO 2</b><br />
-        <b style="font-size:27px"><em>Dealer must hit soft 17</em></b><br />
-        <b style="font-size:36px;color:yellow">INSURANCE PAYS 2 TO 1</b>
+        <b style="font-size:40px; font-family:'Card Characters'; color:yellow">BLACKJACK PAYS 3 TO 2</b><br />
+        <b style="font-size:27px; font-family: 'Card Characters'"><em>Dealer must hit soft 17</em></b><br />
+        <b style="font-size:40px; font-family:'Card Characters'; color:yellow">INSURANCE PAYS 2 TO 1</b>
     </td></tr>
 
     <tr>
@@ -20,7 +20,8 @@
             <h1>Bet:
             <br />$<%= "%.2f" % @this_round.bet %></h1>
             <h1>Bankroll:
-            <br />$<%= "%.2f" % @this_round.player.bankroll %></h1>
+            <br />$<%= "%.2f" % @this_round.player.current_bankroll %></h1>
+            <br /><%= button_to "Back to player profile", player_path( @this_round.player ), method: "get" %>
         </td>
         
         <td style="border:3px solid white; border-radius:20px">
@@ -36,15 +37,15 @@
             
             <% case @this_round.status %>
             <% when "bust"%>
-                <h1 style="color:red">PLAYER BUSTS</h1>
+                <h1 style="font-family:'Card Characters'; color:red">PLAYER BUSTS</h1>
             <% when "loss"%>
-                <h1 style="color:red">DEALER WINS</h1>
+                <h1 style="font-family:'Card Characters'; color:red">DEALER WINS</h1>
             <% when "push"%>
                 <h1>PUSH</h1>
             <% when "win" %>
-                <h1 style="color:yellow">PLAYER WINS</h1>
+                <h1 style="font-family:'Card Characters'; color:yellow">PLAYER WINS</h1>
             <% when "blackjack" %>
-                <h1 style="color:yellow">BLACKJACK</h1>
+                <h1 style="font-family:'Card Characters'; color:yellow">BLACKJACK</h1>
             <% else %>
                 <%= button_to "Hit", hit_path( @this_round ), method: "patch" if !@this_round.player_score.include?( 21 )%>
                 <br /><br /><%= button_to "Stand", stand_path( @this_round ), method: "patch" %>

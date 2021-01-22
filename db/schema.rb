@@ -14,7 +14,9 @@ ActiveRecord::Schema.define(version: 2021_01_18_032334) do
 
   create_table "players", force: :cascade do |t|
     t.string "name"
-    t.float "bankroll"
+    t.string "password_digest"
+    t.float "current_bankroll"
+    t.float "starting_bankroll"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

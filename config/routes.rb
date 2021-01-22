@@ -1,9 +1,14 @@
 Rails.application.routes.draw do
 
+  ########## LOG IN/out ##########
+
+  get '/', to: 'players#login_form', as: 'login'
+  post '/', to: 'players#login'
+
+  delete '/', to: 'players#logout', as: 'logout'
+
   ########## PLAYERS ##########
-  
-  get 'players/', to: 'players#index', as: 'players'
-  
+    
   get 'players/new', to: 'players#new', as: 'new_player'
   post 'players/', to: 'players#create'
   

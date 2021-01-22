@@ -1,0 +1,24 @@
+<%= stylesheet_link_tag "blackjack_table" %>
+
+<table><tr><td><b style="font-size:64px; font-family:'Card Characters'; color:yellow">BLACKJACK</b></td></tr></table>
+
+<% if flash[ :messages ] %>
+    <table><tr><td>
+    <% flash[ :messages ].each do | error_message | %>
+        <h3><%= error_message %></h3>
+        <% end %>
+    </td></tr></table>
+<% end %>
+
+<table><tr><td style="border:3px solid white; border-radius:20px">
+<%= form_tag "/", method: "post" do %>
+    <%= label_tag :name, "Player name: " %><br />
+    <%= text_field_tag :name %><br /><br />
+    <%= label_tag :password, "Enter password: " %><br />
+    <%= password_field_tag :password %><br /><br />
+    <%= label_tag :password_confirmation, "Confirm password: " %><br />
+    <%= password_field_tag :password_confirmation %><br /><br />
+    <%= submit_tag "Log in" %>
+<% end %>
+<%= button_to "Create a new player", new_player_path, method: "get" %>
+</td></tr></table>

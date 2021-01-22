@@ -5,10 +5,11 @@
     td { text-align: center; vertical-align: middle; padding: 20px; }
 </style>
 
-<h1>Player details: <%= @this_player.name %></h1>
+<h1 style="font-family:'Card Characters'">Player details: <%= @this_player.name %></h1>
 <table style="border:hidden">
     <tr>
-        <td style="border:hidden"><h2>Bankroll: $<%= "%.2f" % @this_player.bankroll %></h2></td>
+        <td style="border:hidden"><h2>Bankroll: $<%= "%.2f" % @this_player.current_bankroll %></h2></td>
+        <td style="border:hidden"><h2>Winnings: <%= @this_player.winnings.negative? ? "-$" : "$" %><%= "%.2f" % @this_player.winnings.abs %></h2></td>
         <td style="border:hidden"><h2>Wins: <%= @this_player.rounds.count{ | round | [ "win", "blackjack" ].include?( round.status ) } %></h2></td>
         <td style="border:hidden"><h2>Losses: <%= @this_player.rounds.count{ | round | [ "loss", "bust" ].include?( round.status ) } %></h2></td>
         <td style="border:hidden">
@@ -27,7 +28,6 @@
 </table>
 
 <table>
-
     <tr>
         <th><h2>No.</h2></th>
         <th><h2>Bet</h2></th>
@@ -35,7 +35,6 @@
         <th><h2>Dealer hand</h2></th>
         <th><h2>Result</h2></th>
     </tr>
-
     <% @this_player.rounds.each do | round | %>
         <tr>
             <td><h2><%= link_to round.id, round_path( round ) %></h2></td>
@@ -70,5 +69,6 @@
             </td>
         </tr>
     <% end %>
-
 </table>
+
+<br /><br /><div align="center"><%= button_to "Log out", logout_path, method: "delete" %><%= button_to "Change name", edit_player_path( @this_player ), method: "get" %></div><br /><br />

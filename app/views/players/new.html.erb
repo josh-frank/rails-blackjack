@@ -6,7 +6,11 @@
             <h3><%= error_message %></h3>
         <% end %>
     <% end %>
-    <%= f.label :name, "New player name: " %>
-    <%= f.text_field :name %>
+    <%= f.label :name, "New player name: " %><br />
+    <%= f.text_field :name %><br /><br />
+    <%= f.label :password, "Choose your password: " %><br />
+    <%= f.password_field :password %><br /><br />
+    <%= f.label :password_confirmation, "Confirm your password: " %><br />
+    <%= f.password_field :password_confirmation %><br /><br />
     <%= f.submit %>
 <% end %>

@@ -23,14 +23,28 @@ td {
     padding: 20px;
 }
 
-a:link {
-    color: white;
-  }
-  
-a:active {
-    color: grey;
-  }
+a:link { color: white; }
+a:active { color: grey; }
+a:visited { color: lightgrey; }
 
-a:visited {
-    color: lightgrey;
-  }
+.player-cards {
+  border: 3px solid white;
+  border-radius: 20px;
+}
+
+.big-instructions {
+  font-size: 40px;
+  font-family:'Card Characters';
+  color:yellow
+}
+
+.small-instructions {
+  font-size: 27px;
+  font-family:'Card Characters';
+  color:white
+}
+
+.round-status { font-family:'Card Characters'; }
+.win { color:yellow; }
+.push { color:white; }
+.loss { color: red;}

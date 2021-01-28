@@ -39,6 +39,14 @@ class Round < ApplicationRecord
         self.class.score( player_array )
     end
 
+    def dealer_final_score
+        self.class.final_score( dealer_score )
+    end
+
+    def player_final_score
+        self.class.final_score( player_score )
+    end
+
     def dealer_bust?
         self.class.score( dealer_array )[ 1 ] > 21
     end
@@ -93,6 +101,10 @@ class Round < ApplicationRecord
             end 
         end
         [ score, score - ( number_of_aces * 11 ) + number_of_aces ]
+    end
+
+    def self.final_score( score )
+        score[ 0 ] > 21 ? score[ 1 ] : score.max
     end
 
 end

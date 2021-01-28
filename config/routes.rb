@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  ########## LOG IN/out ##########
+  ########## LOG IN/OUT ##########
 
   get '/', to: 'players#login_form', as: 'login'
   post '/', to: 'players#login'

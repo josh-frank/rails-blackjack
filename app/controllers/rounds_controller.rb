@@ -29,13 +29,11 @@ class RoundsController < ApplicationController
   
   def stand
     this_round = Round.find( params[ :id ] )
-    this_round.update( dealer_cards: this_round.dealer_array + this_round.deck.pop( 1 ) ) while ( this_round.dealer_score[ 0 ] > 21 ? this_round.dealer_score[ 1 ] : this_round.dealer_score.max ) < 17
-    player_score = this_round.player_score[ 0 ] > 21 ? this_round.player_score[ 1 ] : this_round.player_score.max
-    dealer_score = this_round.dealer_score[ 0 ] > 21 ? this_round.dealer_score[ 1 ] : this_round.dealer_score.max
-    if player_score > dealer_score || this_round.dealer_bust?
+    this_round.update( dealer_cards: this_round.dealer_array + this_round.deck.pop( 1 ) ) while this_round.dealer_final_score < 17
+    if this_round.player_final_score > this_round.dealer_final_score || this_round.dealer_bust?
       this_round.update( status: "win" )
       this_round.player.update( current_bankroll: this_round.player.current_bankroll + this_round.bet * 2 )
-    elsif player_score == dealer_score
+    elsif this_round.player_final_score == this_round.dealer_final_score
       this_round.update( status: "push" )
       this_round.player.update( current_bankroll: this_round.player.current_bankroll + this_round.bet )
     else

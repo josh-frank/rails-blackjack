@@ -9,9 +9,9 @@
     </td></tr>
 
     <tr><td colspan="3">
-        <b style="font-size:40px; font-family:'Card Characters'; color:yellow">BLACKJACK PAYS 3 TO 2</b><br />
-        <b style="font-size:27px; font-family: 'Card Characters'"><em>Dealer must hit soft 17</em></b><br />
-        <b style="font-size:40px; font-family:'Card Characters'; color:yellow">INSURANCE PAYS 2 TO 1</b>
+        <b class="big-instructions">BLACKJACK PAYS 3 TO 2</b><br />
+        <b class="small-instructions"><em>Dealer must hit soft 17</em></b><br />
+        <b class="big-instructions">INSURANCE PAYS 2 TO 1</b>
     </td></tr>
 
     <tr>
@@ -24,7 +24,7 @@
             <br /><%= button_to "Back to player profile", player_path( @this_round.player ), method: "get" %>
         </td>
         
-        <td style="border:3px solid white; border-radius:20px">
+        <td class="player-cards">
             <% @this_round.player_array.each do | player_card | %>
                 <%= image_tag "/images/cards/#{ player_card.to_s.rjust( 2, "0" ) }.svg", height: '150' %>&nbsp;
             <% end %>
@@ -37,20 +37,21 @@
             
             <% case @this_round.status %>
             <% when "bust"%>
-                <h1 style="font-family:'Card Characters'; color:red">PLAYER BUSTS</h1>
+                <h1 class="round-status loss">PLAYER BUSTS</h1>
             <% when "loss"%>
-                <h1 style="font-family:'Card Characters'; color:red">DEALER WINS</h1>
+                <h1 class="round-status loss">DEALER WINS</h1>
             <% when "push"%>
-                <h1>PUSH</h1>
+                <h1 class="round-status push">PUSH</h1>
             <% when "win" %>
-                <h1 style="font-family:'Card Characters'; color:yellow">PLAYER WINS</h1>
+                <h1 class="round-status win">PLAYER WINS</h1>
             <% when "blackjack" %>
-                <h1 style="font-family:'Card Characters'; color:yellow">BLACKJACK</h1>
+                <h1 class="round-status win">BLACKJACK</h1>
             <% else %>
-                <%= button_to "Hit", hit_path( @this_round ), method: "patch" if !@this_round.player_score.include?( 21 )%>
-                <br /><br /><%= button_to "Stand", stand_path( @this_round ), method: "patch" %>
-                <% end %>
-            <% if !@this_round.status.nil? %>
+                <%= button_to "Hit", hit_path( @this_round ), method: "patch", data: @this_round.player_final_score > 16  ?  { confirm:  "Your score is #{ @this_round.player_final_score }. Are you sure you want to hit?" } : nil unless @this_round.player_score.include?( 21 )%>
+                <br /><br />
+                <%= button_to "Stand", stand_path( @this_round ), method: "patch", data: @this_round.player_final_score < 17  ?  { confirm:  "Your score is only #{ @this_round.player_final_score }. Are you sure you want to stand?" } : nil %>
+            <% end %>
+            <% unless @this_round.status.nil? %>
                 <% if flash[ :messages ] %>
                     <% flash[ :messages ].each do | error_message | %>
                         <h3><%= error_message %></h3>
@@ -61,7 +62,6 @@
                     <%= f.number_field :next_bet, value: @this_round.bet, step: 0.1 %><br />
                     <%= f.submit "Deal a new round" %>
                 <% end %>
-                <!-- <br /><br /><%= button_to "Deal a new round", new_round_path( @this_round.player ), method: "post" %> -->
             <% end %>
         </td>
 

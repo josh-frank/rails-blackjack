@@ -5,11 +5,21 @@
     td { text-align: center; vertical-align: middle; padding: 20px; }
 </style>
 
-<h1 style="font-family:'Card Characters'">Player details: <%= @this_player.name %></h1>
+<h1 style="font-family:'Card Characters'" align="center">Player details: <%= @this_player.name %></h1>
 <table style="border:hidden">
     <tr>
         <td style="border:hidden"><h2>Bankroll: $<%= "%.2f" % @this_player.current_bankroll %></h2></td>
-        <td style="border:hidden"><h2>Winnings: <%= @this_player.winnings.negative? ? "-$" : "$" %><%= "%.2f" % @this_player.winnings.abs %></h2></td>
+        <td style="border:hidden">
+            <% if @this_player.winnings.negative? %>
+                <h2 style="color:red">
+            <% elsif @this_player.winnings == 0 %>
+                <h2>
+            <% else %>
+                <h2 style="color:yellow">
+            <% end %>
+                Winnings: <%= @this_player.winnings.negative? ? "-$" : "$" %><%= "%.2f" % @this_player.winnings.abs %>
+            </h2>
+        </td>
         <td style="border:hidden"><h2>Wins: <%= @this_player.rounds.count{ | round | [ "win", "blackjack" ].include?( round.status ) } %></h2></td>
         <td style="border:hidden"><h2>Losses: <%= @this_player.rounds.count{ | round | [ "loss", "bust" ].include?( round.status ) } %></h2></td>
         <td style="border:hidden">
@@ -27,48 +37,52 @@
     </tr>
 </table>
 
-<table>
-    <tr>
-        <th><h2>No.</h2></th>
-        <th><h2>Bet</h2></th>
-        <th><h2>Player hand</h2></th>
-        <th><h2>Dealer hand</h2></th>
-        <th><h2>Result</h2></th>
-    </tr>
-    <% @this_player.rounds.each do | round | %>
+<% if @this_player.rounds.empty? %>
+    <h1 align="center"><em>No rounds yet!</em></h1>
+<% else %>
+    <table>
         <tr>
-            <td><h2><%= link_to round.id, round_path( round ) %></h2></td>
-            <td><h2>$<%= "%.2f" % round.bet %></h2></td>
-            <td>
-                <% round.player_array.each do | player_card | %>
-                    <%= image_tag "/images/cards/#{ player_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
-                <% end %>
-            </td>
-            <td>
-                <% if [ nil, "bust", "blackjack" ].include?( round.status ) %>
-                    <%= image_tag "/images/cards/00.svg", height: '50' %>&nbsp;
-                <% else %>
-                    <%= image_tag "/images/cards/#{ round.dealer_array[ 0 ].to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
-                <% end %>
-                <% round.dealer_array[ 1..-1 ].each do | dealer_card | %>
-                    <%= image_tag "/images/cards/#{ dealer_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
-                <% end %>
-            </td>
-            <td>
-                <% if round.status == "win" || round.status == "blackjack" %>
-                    <h2 style="color:yellow">
-                <% elsif round.status == "bust" || round.status == "loss" %>
-                    <h2 style="color:red">
-                <% elsif round.status.nil? %>
-                    <h2 style="color:greenyellow">
-                <% else %>
-                    <h2>
-                <% end %>
-                <%= round.status.nil? ? "Unfinished" : round.status.capitalize %>
-                </h2>
-            </td>
+            <th><h2>No.</h2></th>
+            <th><h2>Bet</h2></th>
+            <th><h2>Player hand</h2></th>
+            <th><h2>Dealer hand</h2></th>
+            <th><h2>Result</h2></th>
         </tr>
-    <% end %>
-</table>
+        <% @this_player.rounds.each do | round | %>
+            <tr>
+                <td><h2><%= link_to round.id, round_path( round ) %></h2></td>
+                <td><h2>$<%= "%.2f" % round.bet %></h2></td>
+                <td>
+                    <% round.player_array.each do | player_card | %>
+                        <%= image_tag "/images/cards/#{ player_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                    <% end %>
+                </td>
+                <td>
+                    <% if [ nil, "bust", "blackjack" ].include?( round.status ) %>
+                        <%= image_tag "/images/cards/00.svg", height: '50' %>&nbsp;
+                    <% else %>
+                        <%= image_tag "/images/cards/#{ round.dealer_array[ 0 ].to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                    <% end %>
+                    <% round.dealer_array[ 1..-1 ].each do | dealer_card | %>
+                        <%= image_tag "/images/cards/#{ dealer_card.to_s.rjust( 2, "0" ) }.svg", height: '50' %>&nbsp;
+                    <% end %>
+                </td>
+                <td>
+                    <% if round.status == "win" || round.status == "blackjack" %>
+                        <h2 style="color:yellow">
+                    <% elsif round.status == "bust" || round.status == "loss" %>
+                        <h2 style="color:red">
+                    <% elsif round.status.nil? %>
+                        <h2 style="color:greenyellow">
+                    <% else %>
+                        <h2>
+                    <% end %>
+                    <%= round.status.nil? ? "Unfinished" : round.status.capitalize %>
+                    </h2>
+                </td>
+            </tr>
+        <% end %>
+    </table>
+<% end %>
 
 <br /><br /><div align="center"><%= button_to "Log out", logout_path, method: "delete" %><%= button_to "Change name", edit_player_path( @this_player ), method: "get" %></div><br /><br />
